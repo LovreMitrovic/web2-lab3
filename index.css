@@ -67,3 +67,19 @@ button {
 .resource {
     display: none;
 }
+
+#menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 90px;
+}
+
+#menu > label{
+    margin-top: 20px;
+}
+
+#menu > button{
+    margin-top: 20px;
+}

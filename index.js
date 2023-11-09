@@ -69,8 +69,6 @@ function component(width, height, x, y, type) {
             document.getElementsByTagName("img").namedItem('player') :
             document.getElementsByTagName("img").namedItem('asteroid')
         ctx.drawImage(img, this.width / -2, this.height / -2, this.width, this.height)
-        //ctx.fillStyle = type === "player" ? "blue" : "red";
-        //ctx.fillRect(this.width / -2, this.height / -2, this.width, this.height);
         ctx.restore();
     }
     this.detectCollision = function (otherobj) {
@@ -209,9 +207,20 @@ function updateGameArea() {
 
 }
 
-const numOfAsteroids = 30;
-const intervalForAddingAsteroidSec = 10;
+function run() {
+    const inputNumber = document.getElementById("number");
+    const inputInterval = document.getElementById("interval");
+    numOfAsteroids = inputNumber.value ? inputNumber.value : 30;
+    intervalForAddingAsteroidSec = inputInterval.value ? inputInterval.value : 10;
+    console.log(numOfAsteroids, intervalForAddingAsteroidSec);
+    let menu = document.getElementById("menu");
+    menu.remove();
+    gameArea.start();
+    asteroids = initAsteroids(15);
+    player = initPlayer();
+}
 
+let asteroids, player, numOfAsteroids, intervalForAddingAsteroidSec;
 let pressedKeys = {ArrowLeft: false, ArrowRight: false, ArrowUp: false, ArrowDown: false};
 document.addEventListener("keydown", function (e) {
     pressedKeys[e.key] = true;
@@ -220,7 +229,5 @@ document.addEventListener("keyup", function (e) {
     pressedKeys[e.key] = false;
 });
 
-gameArea.start();
-asteroids = initAsteroids(15);
-player = initPlayer();
+document.getElementById("run").addEventListener("click", run);
 
