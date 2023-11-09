@@ -1,3 +1,19 @@
+function formatTime(milis){
+    if(!milis){
+        return "00:00.000";
+    }
+    let seconds = Math.floor(milis/1000);
+    milis -= seconds * 1000;
+    let minutes = Math.floor(seconds/60);
+    seconds -= minutes * 60;
+    if(milis < 10){milis = "00" + milis;}
+    else if(milis < 100){milis = "0" + milis;}
+    if(seconds < 10){seconds = "0" + seconds;}
+    if(minutes<10){minutes = "0" + minutes;}
+    return `${minutes}:${seconds}.${milis}`;
+}
+
+
 let gameArea = {
     canvas: document.createElement("canvas"),
     start: function () {
@@ -13,8 +29,7 @@ let gameArea = {
         this.frameNo = 0;
         this.timeout = 20;
         this.interval = setInterval(updateGameArea, this.timeout);
-        let container = document.getElementById("container");
-        container.appendChild(this.canvas);
+        document.getElementById("container").appendChild(this.canvas);
 
     },
     drawStar: function (x, y) {
@@ -27,14 +42,17 @@ let gameArea = {
     },
     drawTimer: function () {
         let ctx = this.ctx;
-        let text = `Time: ${this.getTime().toFixed(2)}s`
         ctx.font = `30px Arial`;
         ctx.fillStyle = "white";
+        let text = `Best Time: ${formatTime(bestTime)}`;
         let textWidth = ctx.measureText(text).width;
         ctx.fillText(text, this.canvas.width - textWidth - 40, 40);
+        text = `Time: ${formatTime(this.getTime())}`;
+        textWidth = ctx.measureText(text).width;
+        ctx.fillText(text, this.canvas.width - textWidth - 40, 70);
     },
     getTime: function () {
-        return this.frameNo * this.timeout * 0.001;
+        return this.frameNo * this.timeout;
     },
     refreshBackground: function () {
         this.frameNo += 1;
@@ -132,7 +150,6 @@ function loadLeaderboard(restart = false){
         alert("Your browser does not support web storage!");
         return;
     }
-    let key = "myGameBestTimeList";
     if(localStorage.getItem(key) === null){
         localStorage.setItem(key, JSON.stringify([]));
     }
@@ -153,7 +170,7 @@ function loadLeaderboard(restart = false){
     for(let time of leaderboard){
         let timeDiv = document.createElement("div");
         timeDiv.setAttribute("class", "time");
-        timeDiv.innerText = time.toFixed(2) + " sec";
+        timeDiv.innerText = formatTime(time);
         leaderboardDiv.appendChild(timeDiv);
     }
     let restartButton = document.createElement("button");
@@ -199,7 +216,7 @@ function updateGameArea() {
         gameArea.stop();
         loadLeaderboard();
     }
-    if(gameArea.getTime() % intervalForAddingAsteroidSec === 0 &&
+    if(gameArea.getTime() / 1000 % intervalForAddingAsteroidSec === 0 &&
         asteroids.length < numOfAsteroids){
         let newAsteroid = initAsteroids(1)[0];
         asteroids.push(newAsteroid);
@@ -208,11 +225,18 @@ function updateGameArea() {
 }
 
 function run() {
+    let leaderboard = localStorage.getItem(key);
+    if(!leaderboard){
+        bestTime = 0;
+    } else {
+        leaderboard = JSON.parse(leaderboard);
+        leaderboard.sort((a, b) => b-a);
+        bestTime = leaderboard[0];
+    }
     const inputNumber = document.getElementById("number");
     const inputInterval = document.getElementById("interval");
     numOfAsteroids = inputNumber.value ? inputNumber.value : 30;
     intervalForAddingAsteroidSec = inputInterval.value ? inputInterval.value : 10;
-    console.log(numOfAsteroids, intervalForAddingAsteroidSec);
     let menu = document.getElementById("menu");
     menu.remove();
     gameArea.start();
@@ -220,7 +244,8 @@ function run() {
     player = initPlayer();
 }
 
-let asteroids, player, numOfAsteroids, intervalForAddingAsteroidSec;
+const key = "myGameBestTimeList";
+let asteroids, player, numOfAsteroids, intervalForAddingAsteroidSec, bestTime;
 let pressedKeys = {ArrowLeft: false, ArrowRight: false, ArrowUp: false, ArrowDown: false};
 document.addEventListener("keydown", function (e) {
     pressedKeys[e.key] = true;
