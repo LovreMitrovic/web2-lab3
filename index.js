@@ -187,14 +187,6 @@ function initPlayer() {
     return new component(width, height, gameArea.canvas.width/2, gameArea.canvas.height/2, "player");
 }
 
-let pressedKeys = {ArrowLeft: false, ArrowRight: false, ArrowUp: false, ArrowDown: false};
-document.addEventListener("keydown", function (e) {
-    pressedKeys[e.key] = true;
-});
-document.addEventListener("keyup", function (e) {
-    pressedKeys[e.key] = false;
-});
-
 function updateGameArea() {
     gameArea.refreshBackground();
     for(let asteroid of asteroids){
@@ -209,9 +201,26 @@ function updateGameArea() {
         gameArea.stop();
         loadLeaderboard();
     }
+    if(gameArea.getTime() % intervalForAddingAsteroidSec === 0 &&
+        asteroids.length < numOfAsteroids){
+        let newAsteroid = initAsteroids(1)[0];
+        asteroids.push(newAsteroid);
+    }
 
 }
 
+const numOfAsteroids = 30;
+const intervalForAddingAsteroidSec = 10;
+
+let pressedKeys = {ArrowLeft: false, ArrowRight: false, ArrowUp: false, ArrowDown: false};
+document.addEventListener("keydown", function (e) {
+    pressedKeys[e.key] = true;
+});
+document.addEventListener("keyup", function (e) {
+    pressedKeys[e.key] = false;
+});
+
 gameArea.start();
-asteroids = initAsteroids(20);
+asteroids = initAsteroids(15);
 player = initPlayer();
+
