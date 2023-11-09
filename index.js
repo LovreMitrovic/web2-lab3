@@ -74,11 +74,6 @@ function component(width, height, x, y, type) {
         ctx.restore();
     }
     this.detectCollision = function (otherobj) {
-        console.log(this, otherobj);
-        console.log(this.x < otherobj.x + otherobj.width ,
-            this.x + this.width > otherobj.x ,
-            this.y < otherobj.y + otherobj.height ,
-            this.y + this.height > otherobj.y)
         return (this.x - this.width/2< otherobj.x + otherobj.width/2 &&
             this.x + this.width/2 > otherobj.x - otherobj.width/2 &&
             this.y - this.height/2< otherobj.y + otherobj.height/2 &&
@@ -210,6 +205,7 @@ function updateGameArea() {
     player.update();
     gameArea.drawTimer();
     if(asteroids.some(asteroid => player.detectCollision(asteroid))){
+        document.getElementById("explosion").play();
         gameArea.stop();
         loadLeaderboard();
     }
