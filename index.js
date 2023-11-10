@@ -217,7 +217,7 @@ function updateGameArea() {
         loadLeaderboard();
     }
     if(gameArea.getTime() / 1000 % intervalForAddingAsteroidSec === 0 &&
-        asteroids.length < numOfAsteroids){
+        asteroids.length < maxNumOfAsteroids){
         let newAsteroid = initAsteroids(1)[0];
         asteroids.push(newAsteroid);
     }
@@ -236,23 +236,27 @@ function run() {
     }
     const inputNumber = document.getElementById("number");
     const inputInterval = document.getElementById("interval");
-    numOfAsteroids = inputNumber.value ? Number.parseInt(inputNumber.value) : 30;
+    const inputStarting = document.getElementById("starting");
+    maxNumOfAsteroids = inputNumber.value ? Number.parseInt(inputNumber.value) : 30;
     intervalForAddingAsteroidSec = inputInterval.value ? Number.parseInt(inputInterval.value) : 10;
-    if(numOfAsteroids < 11){
-        alert("Number of asteroids needs to be at least 11");
+    startNumOfAsteroids = inputStarting.value ? Number.parseInt(inputStarting.value) : 15;
+    if(startNumOfAsteroids < 1){
+        alert("Min number of asteroids needs to be at least 1")
+    } else if(maxNumOfAsteroids < 11){
+        alert("Max number of asteroids needs to be at least 11");
     } else if (intervalForAddingAsteroidSec < 1){
         alert("Interval needs to be at least 1");
     } else {
         let menu = document.getElementById("menu");
         menu.remove();
         gameArea.start();
-        asteroids = initAsteroids(15);
+        asteroids = initAsteroids(startNumOfAsteroids);
         player = initPlayer();
     }
 }
 
 const key = "myGameBestTimeList";
-let asteroids, player, numOfAsteroids, intervalForAddingAsteroidSec, bestTime;
+let asteroids, player, maxNumOfAsteroids, intervalForAddingAsteroidSec, bestTime, startNumOfAsteroids;
 let pressedKeys = {ArrowLeft: false, ArrowRight: false, ArrowUp: false, ArrowDown: false};
 document.addEventListener("keydown", function (e) {
     pressedKeys[e.key] = true;
