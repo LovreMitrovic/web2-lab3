@@ -224,6 +224,7 @@ function updateGameArea() {
 
 }
 
+
 function run() {
     let leaderboard = localStorage.getItem(key);
     if(!leaderboard){
@@ -235,13 +236,19 @@ function run() {
     }
     const inputNumber = document.getElementById("number");
     const inputInterval = document.getElementById("interval");
-    numOfAsteroids = inputNumber.value ? inputNumber.value : 30;
-    intervalForAddingAsteroidSec = inputInterval.value ? inputInterval.value : 10;
-    let menu = document.getElementById("menu");
-    menu.remove();
-    gameArea.start();
-    asteroids = initAsteroids(15);
-    player = initPlayer();
+    numOfAsteroids = inputNumber.value ? Number.parseInt(inputNumber.value) : 30;
+    intervalForAddingAsteroidSec = inputInterval.value ? Number.parseInt(inputInterval.value) : 10;
+    if(numOfAsteroids < 11){
+        alert("Number of asteroids needs to be at least 11");
+    } else if (intervalForAddingAsteroidSec < 1){
+        alert("Interval needs to be at least 1");
+    } else {
+        let menu = document.getElementById("menu");
+        menu.remove();
+        gameArea.start();
+        asteroids = initAsteroids(15);
+        player = initPlayer();
+    }
 }
 
 const key = "myGameBestTimeList";
