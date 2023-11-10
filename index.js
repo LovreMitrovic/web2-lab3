@@ -85,7 +85,9 @@ function component(width, height, x, y, type) {
         ctx.translate(this.x, this.y);
         let img = type === "player" ?
             document.getElementsByTagName("img").namedItem('player') :
-            document.getElementsByTagName("img").namedItem('asteroid')
+            document.getElementsByTagName("img").namedItem('asteroid');
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = "white";
         ctx.drawImage(img, this.width / -2, this.height / -2, this.width, this.height)
         ctx.restore();
     }
@@ -234,10 +236,10 @@ function run() {
         leaderboard.sort((a, b) => b-a);
         bestTime = leaderboard[0];
     }
-    const inputNumber = document.getElementById("number");
+    const inputNumberMaximum = document.getElementById("number");
     const inputInterval = document.getElementById("interval");
     const inputStarting = document.getElementById("starting");
-    maxNumOfAsteroids = inputNumber.value ? Number.parseInt(inputNumber.value) : 30;
+    maxNumOfAsteroids = inputNumberMaximum.value ? Number.parseInt(inputNumberMaximum.value) : 30;
     intervalForAddingAsteroidSec = inputInterval.value ? Number.parseInt(inputInterval.value) : 10;
     startNumOfAsteroids = inputStarting.value ? Number.parseInt(inputStarting.value) : 15;
     if(startNumOfAsteroids < 1){
